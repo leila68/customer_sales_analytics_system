@@ -13,23 +13,43 @@ purchase_df = pd.read_csv('dataset/purchase_history_dataset.csv')
 # print("\nPurchase Data:")
 # print(purchase_df.head())
 
-# data types
-print(customer_df.info())
-print(product_df.info())
-print(purchase_df.info())
+# # data types
+# print(customer_df.info())
+# print(product_df.info())
+# print(purchase_df.info())
 
 # # find missing data
 # print(customer_df.isnull().sum())
 # print(product_df.isnull().sum())
 # print(purchase_df.isnull().sum())
 
-# # Example: Count unique customers and products
-# print("Unique customers:", customer_df['customer_id'].nunique())
-# print("Unique products:", product_df['product_id'].nunique())
+# Example: Count unique customers and products
+print("Unique customers:", customer_df['customer_id'].nunique())
+print("Unique products:", product_df['product_id'].nunique())
 
-# Calculate total purchases per product
-product_sales = purchase_df.groupby('product_id')['total_amount'].sum().sort_values(ascending=False)
-print("Top products by total sales:")
-print(product_sales.head())
+# # Calculate total purchases per product
+# product_sales = purchase_df.groupby('product_id')['total_amount'].sum().sort_values(ascending=False)
+# print("Top products by total sales:")
+# print(product_sales.head())
+
+
+# Calculate total purchases per product and get the top 5 product_ids
+top_product_ids = purchase_df.groupby('product_id')['total_amount'].sum().nlargest(5)
+last_product_ids = purchase_df.groupby('product_id')['total_amount'].sum().nsmallest(5)
+
+# Save top product IDs into a list
+top_product_id_list = top_product_ids.index.tolist()
+last_product_id_list = last_product_ids.index.tolist()
+print(top_product_id_list)
+print(last_product_id_list)
+
+# Retrieve product names using the list of top product IDs
+top_product_names = product_df[product_df['product_id'].isin(top_product_id_list)]
+last_product_names = product_df[product_df['product_id'].isin(last_product_id_list)]
+
+print("top 5: ", top_product_names[['product_id', 'product_name', 'category', 'brand']].to_string(index=False))
+print("last 5: ", last_product_names[['product_id', 'product_name', 'category', 'brand']].to_string(index=False))
+
+
 
 
